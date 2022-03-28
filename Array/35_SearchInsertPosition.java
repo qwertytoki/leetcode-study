@@ -1,9 +1,13 @@
-// wrong answer
 class Solution {
     public int searchInsert(int[] nums, int target) {
+        if(nums.length == 0){
+            return 0;
+        }
+        
         int startIdx = 0;
         int endIdx = nums.length - 1;
-        while(startIdx == endIdx){
+        
+        while(startIdx != endIdx){
             int midIdx = (startIdx + endIdx)/2;
             if(nums[midIdx] == target ){
                 return midIdx;
@@ -24,7 +28,10 @@ class Solution {
                 }
             }
         }
-        
-        return startIdx;
+        if(startIdx == nums.length - 1){
+            return nums.length;
+        }else{
+            return startIdx;    
+        }
     }
 }
