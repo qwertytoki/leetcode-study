@@ -10,6 +10,7 @@ class Solution {
             if(index1 < 0){
                 for(int j = index2;j>=0; j--){
                     nums1[i]=nums2[j];
+                    i--;
                 }
                 break;
             }
