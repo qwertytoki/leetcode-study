@@ -1,3 +1,4 @@
+// it's O(N^2) solution, not good.
 class Solution {
     public int[] replaceElements(int[] arr) {
         int rightMax = -1;
