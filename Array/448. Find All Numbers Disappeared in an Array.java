@@ -7,7 +7,7 @@ class Solution {
         
         for(int i = 0; i<nums.length; i++){
             int index = Math.abs(nums[i]);
-            if(nums[temp-1]>0){
+            if(nums[index-1]>0){
                 nums[index-1] = nums[index-1]*-1;    
             }
             
