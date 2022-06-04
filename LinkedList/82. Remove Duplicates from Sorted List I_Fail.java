@@ -10,23 +10,21 @@
  */
 class Solution {
     public ListNode deleteDuplicates(ListNode head) {
-        // check next, if next value is same value as current, delete this value and next value
-        // but then if duplication continues 3 or more, it will have ptoblem.
-        // so when it detects duplication, check until finish the duplication.
-        // when duplication is ended, start deleting.   
-        if(head.next == null) return head;
-        ListNode node = head;
-        while(node != null&& node.next!= null){
-            ListNode current = node;
-            ListNode next = node.next;
-            while(current.val == next.val){
-                next = next.next;
-                if(next == null){
-                    break;
+        ListNode sentinel = new ListNode(0, head);
+        ListNode pred = sentinel;
+        
+        while(head != null){
+            if(head.next != null && head.val == head.next.val){
+                while(head.next != null && head.val == head.next.val){
+                    head = head.next;    
                 }
+                pred.next = head.next;    
+                
+            } else{
+                pred = pred.next;
             }
-            node = next;
+            head = head.next;
         }
-        return node;
+        return sentinel.next;
     }
 }
