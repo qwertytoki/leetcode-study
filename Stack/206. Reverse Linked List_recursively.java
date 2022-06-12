@@ -9,17 +9,21 @@
  * }
  */
 class Solution {
-    //https://www.youtube.com/watch?v=jY-EUKXYT20 
-    // この解説がすごいわかりやすかった
     
-    public ListNode reverseList(ListNode head) {
-        ListNode previous= null;
-        while(head != null){
-            ListNode next = head.next;
-            head.next = previous;
-            previous = head;
-            head = next;
+    // https://leetcode.com/problems/reverse-linked-list/discuss/58125/In-place-iterative-and-recursive-Java-solution
+    // recursively はSuggestionの一番高評価のやつ
+    
+    public ListNode reverseList(ListNode head){
+        return reverseListInt(head,null);
+    }
+    
+    private ListNode reverseListInt(ListNode head, ListNode previous){
+        if(head == null){
+            return previous;
         }
-        return previous;
+        ListNode next = head.next;
+        head.next = previous;
+        return reverseListInt(next,head);
     }
 }
+
