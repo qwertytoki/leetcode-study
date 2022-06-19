@@ -4,28 +4,29 @@ class Solution {
         
         // procedure to get unique mails
         for(String email : emails){
+            String[] strArray = email.split("@",0);
             // transfer to char array
-            char[] array = email.toCharArray();
-            char[] convertedArray = new char[array.length()];
+            char[] array = strArray[0].toCharArray();
+            char[] convertedArray = new char[array.length];
             int idx = 0;
             for(char c : array){
             // remove . 
-                if(c == ".") continue;
+                if(c == '.') continue;
             // remove after +
-                if(c == "+")break;
+                if(c == '+')break;
             // remove after@
-                if(c == "@")break;
+                if(c == '@')break;
                 
-                covertedArray[idx++]= c;
+                convertedArray[idx++] = c;
             
             }
             
             // convert it to String
-            String convertedStr = convertedArray.toString();
+            String convertedStr = String.valueOf(convertedArray)+ strArray[1];
+            System.out.println(convertedStr);
             // put to Set 
             emailSet.add(convertedStr);
         }
-        
-        return emailSet.length();
+        return emailSet.size();
     }
 }
