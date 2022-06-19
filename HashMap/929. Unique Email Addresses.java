@@ -1,5 +1,9 @@
 class Solution {
     public int numUniqueEmails(String[] emails) {
+        // replaceAll : replace by using regex
+        // replace : replace without using regex
+
+        // split : using regex, so use escape when you want to split []-.+*?()|^$
         Set<String> set = new HashSet<>();
         for(String email:emails){
             String[] splittedEmail = email.split("@",0);
