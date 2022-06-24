@@ -15,7 +15,7 @@ class Solution {
                     grid[r][c] = '0';
                     Queue<Integer> neighbors = new LinkedList<>();
                     neighbors.add(r*nc+c);
-                    while(neighbors.isEmpty()){
+                    while(!neighbors.isEmpty()){
                         int id = neighbors.remove();
                         int row = id/nc;
                         int col = id%nc;
@@ -39,11 +39,6 @@ class Solution {
                 }
             }
         }
-        return numberOfIslands;
-        
+        return numberOfIslands;   
     }
-    
-    
-    
-  
 }
