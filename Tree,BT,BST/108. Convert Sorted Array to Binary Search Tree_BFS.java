@@ -18,9 +18,7 @@
 class Solution {
     int[] nums;
     public TreeNode sortedArrayToBST(int[] nums) {
-        //真ん中の値を中心に据える。真ん中がない場合は−1する
-        //左半分の真ん中をleft 右半分の真ん中をRight
-        //以降それを繰り返す
+        // 両端をわたしてあげることで処理時に真ん中を取れる
         this.nums = nums;
         return helper(0, nums.length -1);
     }
