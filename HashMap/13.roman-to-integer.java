@@ -32,8 +32,27 @@ class Solution {
     // 5 3,4の結果をresult integerにつめていく
     
     public int romanToInt(String s) {
-        
-        return 1;
+        int sum =0;
+        int i=0;
+        while(i< s.length()){
+            //double symbol check
+            if(i< s.length()-1){
+                String doubleSymbol = s.substring(i,i+2);
+                if(values.containsKey(doubleSymbol)){
+                    sum += values.get(doubleSymbol);
+                    i +=2;
+                    continue;
+                }
+            }
+            //single symbol check
+            String singleSymbol = s.substring(i,i+1);
+            if(values.containsKey(singleSymbol)){
+                sum += values.get(singleSymbol);
+                i++;
+            
+            }
+        }        
+        return sum;
     }
 }
 // @lc code=end
