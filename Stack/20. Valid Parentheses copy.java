@@ -1,20 +1,23 @@
 class Solution {
+    
     public boolean isValid(String s) {
+        Map<Character,Character> map = new HashMap<>();
+        map.put(')','(');
+        map.put('}','{');
+        map.put(']','[');
+    
         Stack<Character> stack = new Stack<>();
-        for(int i= 0; i<s.length(); i++){
-            char a = s.charAt(i);
-            if(a=='('|| a=='{'|| a=='['){
-                stack.push(a);
-            }else if(stack.empty()){
-                return false;    
-            }else if(a == ')'&& stack.pop() !='('){
-                return false;
-            }else if(a == '}'&& stack.pop() !='{'){
-                return false;
-            }else if(a == ']'&& stack.pop() !='['){
-                return false;
+        for(char c:s.toCharArray()){
+            if(map.containsKey(c)){
+                // means it is closing bracket.
+                if(stack.empty() || stack.pop()!=map.get(c)){
+                    return false;
+                }
+            }else{
+                // else means this is opening bracket.
+                stack.push(c);
             }
         }
-        return stack.isEmpty();
+        return stack.empty();
     }
 }
