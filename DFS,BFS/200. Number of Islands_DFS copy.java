@@ -1,6 +1,6 @@
 class Solution {
     public int numIslands(char[][] grid) {
-        //dfs
+        //dfs O(M*N)
         if(grid == null || grid.length == 0) return 0;
         int count = 0;
         for(int r = 0; r<grid.length;r++){
