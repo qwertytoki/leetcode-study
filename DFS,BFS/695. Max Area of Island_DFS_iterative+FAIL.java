@@ -11,9 +11,9 @@ class Solution {
 
         for(int r =0; r<grid.length; r++){
             for(int c = 0;c<grid[0].length;c++){
-                if(grid[r][c] == 1 && !seen[r][c]){
+                if(grid[r][c] == 1 || !seen[r][c]){
                     int count = 0;
-                    Stack<int[]> stack = new Stack();
+                    Stack<int[]> stack = new Stack<>();
                     stack.push(new int[]{r,c});
                     seen[r][c] = true;
                     while(!stack.empty()){
