@@ -1,5 +1,8 @@
 class Solution {
     private int[] memo;
+
+    // recursion and memoization
+    // 次の値を取るか、今の値+次の次の値、どっちが大きいかを比べていく
     public int rob(int[] nums) {
         memo = new int[100];
         Arrays.fill(memo,-1);
