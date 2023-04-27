@@ -1,33 +1,34 @@
 class Solution {
-    // DFS
-    private void dfs(char[][] grid, int r, int c){
-        int nr = grid.length;
-        int nc = grid[0].length;
-        if(r<0||c<0||nr<=r||nc<=c || grid[r][c] == '0'){
-            return;
-        }
-        grid[r][c] = '0';
-        dfs(grid,r-1,c);
-        dfs(grid,r+1,c);
-        dfs(grid,r,c-1);
-        dfs(grid,r,c+1);
-    }
-
+    int nr, nc;
     public int numIslands(char[][] grid) {
-        if(grid.length == 0 || grid[0].length == 0){
-            return 0;
-        }
-        int nr = grid.length;
-        int nc = grid[0].length;
+        //DFS
         int number = 0;
-        for(int r = 0;r<nr;r++){
-            for(int c = 0;c<nc;c++){
-                if(grid[r][c]=='1'){
+        if(grid == null || grid.length == 0){
+            return number;
+        }
+        nr = grid.length;
+        nc = grid[0].length;
+        for(int row = 0;row<nr; row++){
+            for(int col = 0;col<nc;col++){
+                if(grid[row][col]== '1'){
                     number++;
-                    dfs(grid,r,c);
+                    dfs(grid,row,col);
                 }
             }
         }
         return number;
     }
+
+    private void dfs(char[][] grid, int row, int col){
+        if(row<0 || row>=nr||col<0||col>=nc||grid[row][col]=='0'){
+            return;
+        }
+        grid[row][col] = '0';
+        
+        dfs(grid, row-1, col);
+        dfs(grid, row+1, col);
+        dfs(grid, row, col-1);
+        dfs(grid, row, col+1);
+    }
+    
 }
