@@ -1,4 +1,4 @@
-
+// the important point is, if leaf is null, we need to return false.
 class Solution {
     public boolean hasPathSum(TreeNode root, int targetSum) {
         if(root == null){
