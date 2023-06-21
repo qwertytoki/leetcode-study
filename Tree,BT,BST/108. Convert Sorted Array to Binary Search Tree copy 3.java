@@ -1,4 +1,4 @@
-
+// Always pick left middle as root
 class Solution {
     int[] nums;
     public TreeNode sortedArrayToBST(int[] nums) {
