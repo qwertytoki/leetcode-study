@@ -7,7 +7,7 @@ class Solution {
         LinkedList<Pair<TreeNode, Integer>> stack = new LinkedList<>();
         stack.add(new Pair<TreeNode, Integer>(root, targetSum));
         while(!stack.isEmpty()){
-            Pair<TreeNode, Integer> pair = stack.pop();
+            Pair<TreeNode, Integer> pair = stack.popLast();
             TreeNode node = pair.getKey();
             int currentSum = pair.getValue();
             currentSum -= node.val;
