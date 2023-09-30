@@ -1,5 +1,6 @@
 class Solution {
     public double myPow(double x, int n) {
+        //これだめな気がする。 n = Integer.MIN_VALUEの際桁あふれ起こす
         if(n<0){
             x = 1/x;
             n = -n;
