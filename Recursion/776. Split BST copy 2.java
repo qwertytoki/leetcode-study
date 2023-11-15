@@ -5,9 +5,10 @@ class Solution {
         List<TreeNode> smalls=new ArrayList();
         List<TreeNode> bigs=new ArrayList();
         split(root,target,smalls,bigs);
-        // ここまでで、右に入るものはbigs 左に入るものはsmallsに分けられている
+        // ここまでで、右に入るものはbigs 左に入るものはsmallsに分けられている。
+        // まだTreeになっていない、NodeのListがBig Smallに入っている
         TreeNode[] res=new TreeNode[2];
-        res[0]=parse(smalls); // parseメソッドでは、複数のTreeNodeを結合してる
+        res[0]=parse(smalls); // 上記で振り分けたNodeのリストを1つのリストに結合していく
         res[1]=parse(bigs);
         return res;
     }
@@ -16,16 +17,16 @@ class Solution {
         if(root==null){
             return;
         }
-        if(root.val<=target){ // targetが根本より大きい→右側二スプリットが起きる
-            smalls.add(root); // 根本はsmallに入る
-            TreeNode right=root.right; //rightにスプリットが入るので
-            root.right=null; //rightにスプリットが入るので
-            split(right,target,smalls,bigs); //rightにスプリットが入るので
+        if(root.val<=target){ // targetのほうが大きい→もっと右側でスプリットが起きる
+            smalls.add(root); // 根本からsmallに入れる
+            TreeNode right=root.right; //rightは判断できないのでそのままとっておく(この段階ではどっちにも入れない)
+            root.right=null; //smallに入れたrightはnullにして切り取る
+            split(right,target,smalls,bigs); //左側はもう用無しなので右について再帰する 
         }else{
             bigs.add(root); //左側にスプリットが起きるので、rootはbigsに
             TreeNode left=root.left;
             root.left=null;
-            split(left,target,smalls,bigs);
+            split(left,target,smalls,bigs); //上記とは逆の現象
         }
     }
     
