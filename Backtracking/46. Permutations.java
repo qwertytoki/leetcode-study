@@ -22,3 +22,6 @@ class Solution {
         }
     }
 }
+
+// Time : O(N*N!) For文でN回 * 各順列を作る操作はN!
+// Space: O(N) 
