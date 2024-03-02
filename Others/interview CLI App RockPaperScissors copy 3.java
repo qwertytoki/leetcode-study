@@ -29,6 +29,7 @@ class CLIApp{
             if(cpuHand == userHand){
                 System.out.println("draw!");
                 result[2]++;
+                showResult(result);
             }
             else if((userHand == 0 && cpuHand ==1)||
                 (userHand == 1 && cpuHand ==2)||
@@ -36,26 +37,25 @@ class CLIApp{
             ){
                 System.out.println("you lose!");
                 result[1]++;
+                showResult(result);
             }else{
                 System.out.println("you win!");
                 result[0]++;
+                showResult(result);
             }
             System.out.println("Finish? type yes or no");
             String isFinish = scanner.nextLine();
             if(isFinish.equals("yes")){
                 System.out.println("Finish!!!");
-                System.out.println("Win:" + result[0]);
-                System.out.println("Lose:" + result[1]);
-                System.out.println("Draw:" + result[2]);
+                showResult(result);
                 scanner.close();
                 return;
             }
         }
     }
+    private static void showResult(int[] result){
+        System.out.println("Win:" + result[0]);
+        System.out.println("Lose:" + result[1]);
+        System.out.println("Draw:" + result[2]);
+    }
 }
-
-
-// get user input value
-// get random cpu hand 
-// make a result
-// show the result
