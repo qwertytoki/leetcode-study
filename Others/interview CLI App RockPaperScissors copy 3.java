@@ -3,7 +3,7 @@ import java.util.*;
 class CLIApp{
     private static final String[] hands = {"Rock", "Paper", "Scissors"};
     public static void main(String[] args){
-        int[] result = new int[]{0,0,0};
+        int[] result = new int[]{0,0,0}; // 0: win, 1:lose, 2:draw
         while(true){
             Scanner scanner = new Scanner(System.in);
             Random random = new Random();
@@ -26,23 +26,8 @@ class CLIApp{
             int cpuHand = random.nextInt(3);
             System.out.println("cpu Hand :"+ hands[cpuHand]);
             
-            if(cpuHand == userHand){
-                System.out.println("draw!");
-                result[2]++;
-                showResult(result);
-            }
-            else if((userHand == 0 && cpuHand ==1)||
-                (userHand == 1 && cpuHand ==2)||
-                (userHand == 2 && cpuHand ==0)
-            ){
-                System.out.println("you lose!");
-                result[1]++;
-                showResult(result);
-            }else{
-                System.out.println("you win!");
-                result[0]++;
-                showResult(result);
-            }
+            judge(userHand, cpuHand, result);
+            
             System.out.println("Finish? type yes or no");
             String isFinish = scanner.nextLine();
             if(isFinish.equals("yes")){
@@ -57,5 +42,25 @@ class CLIApp{
         System.out.println("Win:" + result[0]);
         System.out.println("Lose:" + result[1]);
         System.out.println("Draw:" + result[2]);
+    }
+
+    private static void judge(int userHand, int cpuHand, int[] result){
+        if(cpuHand == userHand){
+            System.out.println("draw!");
+            result[2]++;
+            showResult(result);
+        }
+        else if((userHand == 0 && cpuHand ==1)||
+            (userHand == 1 && cpuHand ==2)||
+            (userHand == 2 && cpuHand ==0)
+        ){
+            System.out.println("you lose!");
+            result[1]++;
+            showResult(result);
+        }else{
+            System.out.println("you win!");
+            result[0]++;
+            showResult(result);
+        }
     }
 }
