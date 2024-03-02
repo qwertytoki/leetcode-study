@@ -9,19 +9,8 @@ class CLIApp{
             Random random = new Random();
             System.out.println("Rock, Paper, Scissors...");
             System.out.println("Please input Rock:0, Paper:1, Scissors:2");
-            int userHand = -1;
-            if(scanner.hasNextInt()){
-                userHand = scanner.nextInt();
-                scanner.nextLine();
-            }else{
-                System.out.println("invalid hand! please input 0,1,2. ");
-                continue;
-            }
-            
-            if(userHand< 0 || userHand>2){
-                System.out.println("invalid hand! please input 0,1,2. ");
-                continue;
-            }
+            int userHand = getUserHand(scanner);
+            if(userHand == -1)continue;
             System.out.println("User Hand :"+ hands[userHand]);
             int cpuHand = random.nextInt(3);
             System.out.println("cpu Hand :"+ hands[cpuHand]);
@@ -37,6 +26,23 @@ class CLIApp{
                 return;
             }
         }
+    }
+    
+    private static int getUserHand(Scanner scanner){
+        int userHand = -1;
+        if(scanner.hasNextInt()){
+            userHand = scanner.nextInt();
+            scanner.nextLine();
+        }else{
+            System.out.println("invalid hand! please input 0,1,2. ");
+            return -1;
+        }
+        
+        if(userHand< 0 || userHand>2){
+            System.out.println("invalid hand! please input 0,1,2. ");
+            return -1;
+        }
+        return userHand;
     }
     private static void showResult(int[] result){
         System.out.println("Win:" + result[0]);
