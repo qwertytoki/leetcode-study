@@ -1,10 +1,10 @@
-import java.util.*
+import java.util.*;
 
 class ToDoItem{
     private String task;
     private boolean isCompleted;
     
-    public ToDoItem(Stirng task, boolean isCompleted){
+    public ToDoItem(String task, boolean isCompleted){
         this.task = task;
         this.isCompleted = isCompleted;
     }
@@ -31,7 +31,7 @@ class ToDoItem{
 class ToDoApp{
     private List<ToDoItem> toDoList;
 
-    public TodoApp(){
+    public ToDoApp(){
         this.toDoList = new ArrayList<>();
     } 
 
@@ -44,7 +44,7 @@ class ToDoApp{
             System.out.println("There is no ToDo now. Please add ToDo.");
         }
         for(int i =0;i<toDoList.size(); i++){
-            System.out.println(task.getTask());
+            System.out.println(toDoList.get(i).getTask());
         }
     }
     
@@ -52,18 +52,20 @@ class ToDoApp{
     public static void main(String[] args){
         ToDoApp app = new ToDoApp();
         Scanner scanner = new Scanner(System.in);
-
+        System.out.println("ToDo App start");
         while(true){
-            System.out.println("ToDo App start");
             System.out.println("Select the option:");
             System.out.println("1: add ToDo");
             System.out.println("2: show all ToDos");
             System.out.println("3: exit App");
             int option = -1;
             if(scanner.hasNextInt()){
-                option = scanner.nextLine();
+                option = scanner.nextInt();
+                scanner.nextLine();
             }else{
                 System.out.println("invalid input, please input 1-3");
+                scanner.nextLine();
+                continue;
             }
 
             switch(option){
