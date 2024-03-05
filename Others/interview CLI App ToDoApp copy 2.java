@@ -1,4 +1,4 @@
-import java.util;
+import java.util.*;
 
 /**
  * Simple ToDo App
@@ -79,12 +79,13 @@ class ToDoApp{
     }
 
     public void showAllTasks(){
-        if(isEmpty(taskList)){
+        if(taskList.isEmpty()){
             System.out.println("There is no task now.");
+            return;
         }
         System.out.println("-------------ToDo List start----------");
         for(int i =0; i< taskList.size(); i++){
-            String displayText = (isCompleted?"[X] ":"[] ")+i+". "+ taskList.get(i).getTask();
+            String displayText = (taskList.get(i).isCompleted()?"[X] ":"[] ")+(i+1)+". "+ taskList.get(i).getTask();
             System.out.println(displayText);
         }
         System.out.println("-------------ToDo List end----------");
@@ -103,12 +104,13 @@ class ToDoApp{
             System.out.println("1 add task");
             System.out.println("2 show all the todos");
             System.out.println("9 exit app");
-            System.out.println("please choose " + OPTION_NUMBER);
-            int opiton = -1;
+            System.out.println("please choose " + app.OPTION_NUMBER);
+            int option = -1;
             if(scanner.hasNextInt()){
-                option = scanner.nextLine();
+                option = scanner.nextInt();
+                scanner.nextLine();
             }else{
-                System.out.println(ERROR_MESSAGE);
+                System.out.println(app.ERROR_MESSAGE);
                 scanner.nextLine();
             }
             switch (option){
@@ -118,15 +120,15 @@ class ToDoApp{
                     app.addTask(task);
                     System.out.println("ToDo added!");
                     break;
-                case:2
+                case 2:
                     app.showAllTasks();
                     break;
-                case:9
+                case 9:
                     System.out.println("bye!");
                     scanner.close();
                     return;
                 default:
-                    System.out.println(ERROR_MESSAGE);
+                    System.out.println(app.ERROR_MESSAGE);
             }
         }
         
