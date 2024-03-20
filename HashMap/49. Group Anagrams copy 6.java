@@ -12,3 +12,19 @@ class Solution {
         return new ArrayList(map.values());
     }
 }
+
+class Main{
+    public static void main(String[] args){
+        System.out.println("Hello World!");
+    }
+}
+
+public static void main(String args[]){
+    System.out.println("Hello World!");
+}
+
+class Main{
+    public static void main(String[] args){
+        System.out.println("Hello World!");
+    }
+}
