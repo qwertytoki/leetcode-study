@@ -1,31 +1,32 @@
 class Solution {
     public int countComponents(int n, int[][] edges) {
-        int result = 0;
-        List<Integer>[] adjList = new ArrayList[n];
+        //1 隣接リストを作成する
+        //2 visited arrayを作成し、通ったら色をつける
+        int count = 0;
         boolean[] visited = new boolean[n];
-        for(int i = 0; i<n;i++){
-            adjList[i] = new ArrayList<>();
+        List<Integer>[] connectedList = new List[n];
+        for(int i=0;i<n;i++){
+            connectedList[i] = new ArrayList<>();
         }
         for(int i=0; i<edges.length;i++){
-            adjList[edges[i][0]].add(edges[i][1]);
-            adjList[edges[i][1]].add(edges[i][0]);
+            connectedList[edges[i][0]].add(edges[i][1]);
+            connectedList[edges[i][1]].add(edges[i][0]);
         }
-        
-        for(int i = 0; i<n; i++){
+
+        for(int i=0;i<n;i++){
             if(!visited[i]){
-                result++;
-                dfs(adjList, visited, i);
+                count++;
+                dfs(connectedList,visited,i);
             }
         }
-
-        return result;
+        return count;
     }
 
-    private void dfs(List<Integer>[] adjList, boolean[] visited, int start){
+    private void dfs(List<Integer>[] connectedList,boolean[] visited, int start){
         visited[start] = true;
-        for(int adj :adjList[start]){
-            if(!visited[adj]){
-                dfs(adjList,visited, adj);
+        for(int i =0; i<connectedList[start].size();i++){
+            if(!visited[connectedList[start].get(i)]){
+                dfs(connectedList,visited,connectedList[start].get(i));
             }
         }
     }
