@@ -15,7 +15,7 @@ class Solution {
             if(visited[i] == false){
                 count++;
                 dfs(adjList,visited,i);
-            }
+            }yearn
         }
         return count;
     }
