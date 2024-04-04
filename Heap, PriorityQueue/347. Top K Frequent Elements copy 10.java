@@ -1,31 +1,20 @@
-/**
- * Definition for singly-linked list.
- * public class ListNode {
- *     int val;
- *     ListNode next;
- *     ListNode() {}
- *     ListNode(int val) { this.val = val; }
- *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
- * }
- */
 class Solution {
-    public ListNode deleteDuplicates(ListNode head) {
-        ListNode sentinel = new ListNode(0, head);
-        ListNode current = sentinel;
-
-        while(head != null){
-            if(head.next!=null && head.val == head.next.val){
-                while(head.next != null && head.val == head.next.val){
-                    head = head.next;
-                }
-                current.next = head.next;
-            }else{
-                current = current.next;
-            }
-            
-            head = head.next;
+    public int[] topKFrequent(int[] nums, int k) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for(int num:nums){
+            map.put(num, map.getOrDefault(num, 0)+1);
         }
 
-        return sentinel.next;
+        PriorityQueue<Integer> pq = new PriorityQueue<>((a,b)-> map.get(b)-map.get(a));
+        for(int key : map.keySet()){
+            pq.add(key);
+        }
+        int[] result = new int[k];
+        for(int i = 0; i<k; i++){
+            int key = pq.poll();
+            result[i] = key;
+        }
+
+        return result;
     }
 }
