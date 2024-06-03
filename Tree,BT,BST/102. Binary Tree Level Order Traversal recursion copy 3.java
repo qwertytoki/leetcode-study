@@ -29,9 +29,8 @@ class Solution {
         if(!map.containsKey(level)){
             map.put(level, new ArrayList<>());
         }
-        List<Integer> list = map.get(level);
-        list.add(root.val);
-        map.put(level, list);
+        map.get(level).add(root.val);
+        
         if(root.left != null){
             helper(root.left, level+1);
         }
