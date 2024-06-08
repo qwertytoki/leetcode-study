@@ -1,5 +1,4 @@
 class Solution {
-
     int[] memo;
     public int rob(int[] nums) {
         this.memo = new int[101];
@@ -17,6 +16,4 @@ class Solution {
         memo[index] = Math.max(helper(nums, index+1), helper(nums, index+2) + nums[index]);
         return memo[index];
     }
-
-    
 }
