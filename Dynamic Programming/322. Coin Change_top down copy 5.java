@@ -13,7 +13,7 @@ class Solution{
         if(amount == 0){
             return 0;
         }
-        if(memo[amount]>0){
+        if(memo[amount]!= 0){
             return memo[amount];
         }
         int min = Integer.MAX_VALUE;
