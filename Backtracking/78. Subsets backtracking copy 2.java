@@ -9,7 +9,8 @@ class Solution {
         return result;
     }
 
-    private void backtrack(int[] nums, int start, int size, List<List<Integer>> result, List<Integer> current) {
+    private void backtrack(int[] nums, int start, int size, 
+        List<List<Integer>> result, List<Integer> current) {
         if (current.size() == size) {
             result.add(new ArrayList<>(current));
             return;
