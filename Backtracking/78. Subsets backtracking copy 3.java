@@ -19,6 +19,4 @@ class Solution {
             current.remove(current.size()-1);
         }
     }
-
-    
 }
