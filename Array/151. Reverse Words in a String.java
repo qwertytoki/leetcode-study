@@ -12,7 +12,7 @@ class Solution {
                 }
             }
         }
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for(int i = list.size()-1; i>=0; i--){
             sb.append(list.get(i));
             if(i!=0){
