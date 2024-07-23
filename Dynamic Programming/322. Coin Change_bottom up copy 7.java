@@ -1,8 +1,5 @@
 class Solution {
     public int coinChange(int[] coins, int amount) {
-        Map<Integer, Integer> map = new HashMap<>();
-        map.put(0,0);
-
         int max = amount +1000;
         int[] dp = new int[amount+1];
         Arrays.fill(dp, max);
