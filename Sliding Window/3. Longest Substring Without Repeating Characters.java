@@ -1,16 +1,22 @@
 class Solution {
     public int lengthOfLongestSubstring(String s) {
+        // iとjの差分が一番大きいところを取得する
+        // mapを宣言し、同じkeyをみつけたらindexを更新する
+        // jをスライドさせていき、mapに同じ数字があったらiを更新する
+        // iとjの差を今の最大幅と比較する
+        
+        int length = s.length();
+        int result = 0;
         Map<Character, Integer> map = new HashMap<>();
-        int left = 0;
-        int longest = 0;
-        for(int i = 0; i < s.length();i++){
-            char c = s.charAt(i);
-            if(map.containsKey(c)){
-                left = Math.max(left, map.get(c)+1);
+        
+        for(int i=0, j=0; j<length;j++ ){ // for文内に変数2つ同時に宣言できるんだね
+            if(map.containsKey(s.charAt(j))){
+                i = Math.max(map.get(s.charAt(j)),i);
             }
-            longest = Math.max(longest, i-left+1);
-            map.put(c, i);
-        }
-        return longest;
+            result = Math.max(result,j-i+1);
+            map.put(s.charAt(j),j+1);
+        }  
+        
+        return result;
     }
 }

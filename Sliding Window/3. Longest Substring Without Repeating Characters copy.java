@@ -1,15 +1,27 @@
 class Solution {
+    int[] alphabets;
     public int lengthOfLongestSubstring(String s) {
-        int n = s.length();
-        int answer = 0;
-        Map<Character, Integer> map = new HashMap<>();
-        for(int i=0,j=0; j<n; j++){
-            if(map.containsKey(s.charAt(j))){
-                i = Math.max(map.get(s.charAt(j)), i); //Math.maxにして、現在のiの位置を気にかける
-            }
-            answer = Math.max(answer, j-i +1);
-            map.put(s.charAt(j), j+1);
+      // 普通にMap使ってゴリ押しすればいけそう
+      Map<Character, Integer> charCountMap = new HashMap<>();
+      int start = 0;
+      int end = 0;
+      char[] charArray = s.toCharArray();
+      int result = 0;
+      while(end < s.length()){
+        char c = charArray[end];
+        charCountMap.put(c, charCountMap.getOrDefault(c,0)+1);
+      
+        while(charCountMap.get(c) > 1){
+          char l = charArray[start];
+          charCountMap.put(l,charCountMap.get(l) -1);
+          start++;
         }
-        return answer;
+      
+        result = Math.max(result, end-start+1);
+        end++;
+      }
+      return result;
     }
+
+    
 }
