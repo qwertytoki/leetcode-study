@@ -1,10 +1,10 @@
 import java.util.*;
 
 interface ExchangeRateProvider {
-    double getExchangeRate(String fromCurrency, String toCurrency) throw Exception;
+    double getExchangeRate(String fromCurrency, String toCurrency) throws Exception;
 }
 
-class APIClientA impelements ExchangeRateProvider{
+class APIClientA implements ExchangeRateProvider{
     @Override
     public double getExchangeRate(String fromCurrency, String toCurrency)throws Exception{
         // for testing
@@ -48,7 +48,7 @@ class CacheManager {
         double rate;
         long timestamp;
 
-        CacheEtnry(double rate, long timestamp){
+        CacheEntry(double rate, long timestamp){
             this.rate = rate;
             this.timestamp = timestamp;
         }
@@ -70,50 +70,50 @@ class CacheManager {
         return null;
     }
 
-    public void storeRateInCache(Stirng currencyPair, double rate){
+    public void storeRateInCache(String currencyPair, double rate){
         System.out.println("cache store for "+currencyPair);
         cache.put(currencyPair, new CacheEntry(rate, System.currentTimeMillis()));
     }
 }
 
 class CurrencyConverterService {
-    private final ExchangeRateProvider;
-    private final CacheManager;
+    private final ExchangeRateProvider provider;
+    private final CacheManager cacheManager;
 
     public CurrencyConverterService(ExchangeRateProvider provider, CacheManager cacheManager){
-        this.ExchangeRateProvider = provider;
+        this.provider = provider;
         this.cacheManager = cacheManager;
     }
 
-    public double convertCurrency(String fromCurrency, String toCurrency. double amount) throws Exception{
+    public double convertCurrency(String fromCurrency, String toCurrency, double amount) throws Exception{
         String currencyPair = fromCurrency + "_" + toCurrency;
         Double rate = cacheManager.getRateFromCache(currencyPair);
         if(rate == null){
             rate = provider.getExchangeRate(fromCurrency, toCurrency);
             cacheManager.storeRateInCache(currencyPair, rate);
         }
-        return amount * rate;
+        return Math.round(amount * rate);
     }
 }
 
 //Main Class
 public class CurrencyExchange{
     public static void main(String[] args){
-        List<ExchangeRateProvider> providers = Arrays.asList(new APIClientA(), new APIClientB);
+        List<ExchangeRateProvider> providers = Arrays.asList(new APIClientA(), new APIClientB());
         ExchangeRateProvider rateProvider = new FallbackExchangeRateProvider(providers);
         CacheManager cacheManager = new CacheManager(60000);
-        CurrencyConverterService converterService = new CurrencyConverterService(rateProvder, cacheManager);
+        CurrencyConverterService converterService = new CurrencyConverterService(rateProvider, cacheManager);
         
         try{
-            double convertAmount1 = convertService.convertCurrency("USD", "EUR", 100);
+            double convertedAmount1 = converterService.convertCurrency("USD", "EUR", 100);
             System.out.println("Converted amount 1: " + convertedAmount1);
 
             //cache will hit
-            double convertAmount2 = convertService.convertCurrency("USD", "EUR", 200);
+            double convertedAmount2 = converterService.convertCurrency("USD", "EUR", 200);
             System.out.println("Converted amount 2: " + convertedAmount2);
             
             //cache will not hit
-            double convertAmount3 = convertService.convertCurrency("USD"
+            double convertedAmount3 = converterService.convertCurrency("USD" , "GBP", 150);
             System.out.println("Converted amount 3: " + convertedAmount3);
         } catch (Exception e){
             e.printStackTrace();
