@@ -49,6 +49,10 @@ class FallbackExchangeProvider implements RateProvider {
     }
 }
 
+class currencyConversionService {
+
+}
+
 class Main {
 
     public static void main(String[] args) {
