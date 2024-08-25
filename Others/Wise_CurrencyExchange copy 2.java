@@ -94,8 +94,8 @@ class CurrencyConvertService {
     private final ExchangeRateProvider provider;
     private final CacheManager cacheManager;
 
-    public CurrencyConvertService(List<ExchangeRateProvider> providers) {
-        this.providers = providers;
+    public CurrencyConvertService(ExchangeRateProvider provider, CacheManager cacheManager) {
+        this.provider = provider;
         this.cacheManager = cacheManager;
     }
 
@@ -103,10 +103,10 @@ class CurrencyConvertService {
         String currencyPair = fromCurrency + "_" + toCurrency;
         Double rate = cacheManager.getCache(currencyPair);
         if (rate == null) {
-            rate = provider.getEchangeRate(fromCurrency, toCurrency);
+            rate = provider.getExchangeRate(fromCurrency, toCurrency);
             cacheManager.putCache(currencyPair, rate);
         }
-        return Math.round(rate * amount);
+        return rate * amount;
     }
 
 }
@@ -118,15 +118,15 @@ class Main {
         ExchangeRateProvider exchangeRateProvider = new FallbackExchangeRateProvider(providers);
         CacheManager cacheManager = new CacheManager(60000);
 
-        CurrencyConvertService convertService = new CurrencyConverterService(exchangeRateProvider, cacheManager);
+        CurrencyConvertService convertService = new CurrencyConvertService(exchangeRateProvider, cacheManager);
         try {
             double amount1 = convertService.convertCurrency("SGD", "JPY", 100);
-            System.out.println("converted amount1" = amount1);
+            System.out.println("converted amount1 " + amount1);
             double amount2 = convertService.convertCurrency("SGD", "JPY", 200);
-            System.out.println("converted amount1" = amount2);
+            System.out.println("converted amount2 " + amount2);
             double amount3 = convertService.convertCurrency("SGD", "USD", 150);
-            System.out.println("converted amount1" = amount3);
-        } catch (Excepntion e) {
+            System.out.println("converted amount3 " + amount3);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
