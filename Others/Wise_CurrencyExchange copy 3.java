@@ -49,7 +49,18 @@ class FallbackExchangeProvider implements RateProvider {
     }
 }
 
-class currencyConversionService {
+class CurrencyConversionService {
+
+    RateProvider rateProvider;
+
+    CurrencyConversionService(RateProvider rateProvider) {
+        this.rateProvider = rateProvider;
+    }
+
+    public double currencyConvert(String fromCurrency, String toCurrency, double amount) throws Exception {
+        double rate = rateProvider.getCurrencyRate(fromCurrency, toCurrency);
+        return rate * amount;
+    }
 
 }
 
@@ -57,9 +68,10 @@ class Main {
 
     public static void main(String[] args) {
         RateProvider rateProvider = new FallbackExchangeProvider(Arrays.asList(new APIClientA(), new APIClientB()));
+        CurrencyConversionService converter = new CurrencyConversionService(rateProvider);
         try {
-            double rate = rateProvider.getCurrencyRate("SGD", "JPY");
-            System.out.println("converted value is :" + rate * 1000);
+            double amount = converter.currencyConvert("SGD", "JPY", 1000);
+            System.out.println("converted value is :" + amount);
         } catch (Exception e) {
             System.out.println(e.toString());
             e.printStackTrace();
