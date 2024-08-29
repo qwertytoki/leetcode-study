@@ -48,6 +48,44 @@ class FallbackExchangeProvider implements RateProvider {
 
 class CacheManager {
 
+    class CacheValue {
+
+        long time;
+        double rate;
+
+        CacheValue(long time, double rate) {
+            this.time = time;
+            this.rate = rate;
+        }
+    }
+
+    long windowTimeMillis;
+    Map<String, CacheValue> cache;
+
+    CacheManager(long windowTimeMillis) {
+        this.windowTimeMillis = windowTimeMillis;
+        cache = new HashMap<>();
+    }
+
+    public void add(String currencyPair, double rate) {
+        long currentTime = System.currentTimeMillis();
+        cache.put(currencyPair, new CacheValue(currentTime, rate));
+    }
+
+    public Double get(String currencyPair) {
+        long currentTime = System.currentTimeMillis();
+        if (!cache.containsKey(currencyPair)) {
+            System.out.println("Cache not hit");
+            return null;
+        }
+        CacheValue cacheValue = cache.get(currencyPair);
+        if ((currentTime - cacheValue.time) > windowTimeMillis) {
+            System.out.println("Cache hit but expired");
+            return null;
+        }
+        return cacheValue.rate;
+    }
+
 }
 
 class CurrencyConvertService {
