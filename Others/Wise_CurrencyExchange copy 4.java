@@ -83,6 +83,7 @@ class CacheManager {
             System.out.println("Cache hit but expired");
             return null;
         }
+        System.out.println("Cache hit");
         return cacheValue.rate;
     }
 
@@ -114,7 +115,7 @@ class Main {
     public static void main(String[] args) {
         List<RateProvider> providers = Arrays.asList(new ClientA(), new ClientB());
         RateProvider rateProvider = new FallbackExchangeProvider(providers);
-        CacheManager cacheManager = new CacheManager(60000);
+        CacheManager cacheManager = new CacheManager(500);
         CurrencyConvertService currencyConvertService = new CurrencyConvertService(rateProvider, cacheManager);
         try {
             double convertedAmount1 = currencyConvertService.convertCurrency("SGD", "JPY", 1000);
@@ -123,6 +124,9 @@ class Main {
             System.out.println("convertedAmount2' value : " + convertedAmount2);
             double convertedAmount3 = currencyConvertService.convertCurrency("SGD", "USD", 1500);
             System.out.println("convertedAmount3' value : " + convertedAmount3);
+            Thread.sleep(500);
+            double convertedAmount4 = currencyConvertService.convertCurrency("SGD", "JPY", 1000);
+            System.out.println("convertedAmount1' value : " + convertedAmount4);
         } catch (Exception e) {
             e.printStackTrace();
         }
