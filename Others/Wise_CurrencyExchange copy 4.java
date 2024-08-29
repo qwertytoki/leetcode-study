@@ -91,16 +91,22 @@ class CacheManager {
 class CurrencyConvertService {
 
     RateProvider rateProvider;
+    CacheManager cacheManager;
 
-    CurrencyConvertService(RateProvider rateProvider) {
+    CurrencyConvertService(RateProvider rateProvider, CacheManager cacheManager) {
         this.rateProvider = rateProvider;
+        this.cacheManager = cacheManager;
     }
 
     public double convertCurrency(String fromCurrency, String toCurrency, double amount) throws Exception {
-        double rate = rateProvider.getCurrencyRate(fromCurrency, toCurrency);
+        String currencyPair = fromCurrency + "_" + toCurrency;
+        Double rate = cacheManager.get(currencyPair);
+        if (rate == null) {
+            rate = rateProvider.getCurrencyRate(fromCurrency, toCurrency);
+            cacheManager.add(currencyPair, rate);
+        }
         return rate * amount;
     }
-
 }
 
 class Main {
@@ -108,7 +114,8 @@ class Main {
     public static void main(String[] args) {
         List<RateProvider> providers = Arrays.asList(new ClientA(), new ClientB());
         RateProvider rateProvider = new FallbackExchangeProvider(providers);
-        CurrencyConvertService currencyConvertService = new CurrencyConvertService(rateProvider);
+        CacheManager cacheManager = new CacheManager(60000);
+        CurrencyConvertService currencyConvertService = new CurrencyConvertService(rateProvider, cacheManager);
         try {
             double convertedAmount1 = currencyConvertService.convertCurrency("SGD", "JPY", 1000);
             System.out.println("convertedAmount1' value : " + convertedAmount1);
