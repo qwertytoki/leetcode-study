@@ -43,9 +43,12 @@ class RateLimiter {
             requestsInWindow.poll();
         }
         if (requestsInWindow.size() > maxRequests) {
-            System.out.println("Over max requests, sleep 1 second.");
-            Thread.sleep(100);
-            acquire();
+            long sleepTime = windowTimeMillis - (currentTime - requestsInWindow.peek());
+            if (sleepTime > 0) {
+                System.out.println("Requests are over the max. Sleep time : " + sleepTime);
+                Thread.sleep(sleepTime);
+            }
+
         }
         System.out.println("now we are good to go!");
         requestsInWindow.add(currentTime);
