@@ -48,6 +48,7 @@ class RateLimiter {
             acquire();
         }
         System.out.println("now we are good to go!");
+        requestsInWindow.add(currentTime);
     }
 }
 
