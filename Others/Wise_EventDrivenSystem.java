@@ -36,10 +36,6 @@ class EventDrivenSystem {
     }
 
     public void subscribeToEvent(String eventType, Consumer<String> handler) {
-        if (!eventMap.containsKey(eventType)) {
-            eventMap.put(eventType, new ArrayList<>());
-        }
-        List<Consumer<String>> consumers = eventMap.get(eventType);
-        consumers.add(handler);
+        eventMap.computeIfAbsent(eventType, k -> new ArrayList<>()).add(handler);
     }
 }
