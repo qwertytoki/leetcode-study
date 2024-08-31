@@ -48,8 +48,13 @@ public class RateLimiter {
         System.out.println(rateLimiter.allowRequest("client2")); // true
         System.out.println(rateLimiter.allowRequest("client2")); // true
         System.out.println(rateLimiter.allowRequest("client2")); // false (limit reached)
-        //  Thread.sleep(6000);
-        // System.out.println(rateLimiter.allowRequest("client1")); // true
+        try {
+            Thread.sleep(6000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
+        System.out.println(rateLimiter.allowRequest("client1")); // true
+        System.out.println(rateLimiter.allowRequest("client2")); // true
     }
 }
