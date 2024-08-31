@@ -114,11 +114,25 @@ class Main {
 
         CurrencyConversionService service = new CurrencyConversionService(rateLimiter, cacheManager, rateProvider);
         try {
+            // 1 basic function test
             double convertedAmount1 = service.convertCurrency("USD", "EUR", 1000);
-            System.out.println(convertedAmount1);
-
+            System.out.println("basic funtion test convertedAmount1 : " + convertedAmount1);
+            // 2 cache test
+            double convertedAmount1_withCache = service.convertCurrency("USD", "EUR", 2000);
+            System.out.println("cache test. you will see 'cache hit USD_EUR' convertedAmount1_withCache :" + convertedAmount1_withCache);
             double convertedAmount2 = service.convertCurrency("USD", "JPY", 2000);
-            System.out.println(convertedAmount2);
+            System.out.println("cache test. you will see 'cache not exist for USD_JPY' convertedAmount2" + convertedAmount2);
+            // 3 cache expire test
+            Thread.sleep(500);
+            double convertedAmount1_cacheExpire = service.convertCurrency("USD", "EUR", 3000);
+            System.out.println("cache test. you will see 'cache exist but expired: USD_EUR' convertedAmount1_cacheExpire :" + convertedAmount1_cacheExpire);
+
+            //4 high through put test
+            for (int i = 0; i < 30; i++) {
+                convertedAmount1 = service.convertCurrency("USD", "EUR", 1500);
+                Thread.sleep(300);
+            }
+            System.out.println("you will see 'Requests are over the max' convertedAmount1: " + convertedAmount1);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
