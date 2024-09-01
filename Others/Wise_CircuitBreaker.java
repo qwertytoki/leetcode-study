@@ -2,6 +2,46 @@
 import java.util.*;
 import java.util.function.Supplier;
 
+public class Wise_CircuitBreaker {
+
+    public static void main(String[] args) {
+        Supplier<String> testFunction = new Supplier<String>() {
+            private int count = 0;
+
+            @Override
+            public String get() {
+                count++;
+                if (count < 4) {
+                    throw new RuntimeException("failed");
+                } else {
+                    return "hello";
+                }
+            }
+        };
+
+        CircuitBreaker<String> circuitBreaker = new CircuitBreaker<>(testFunction, 3, 2000, 5000);
+
+        for (int i = 0; i < 3; i++) {
+            try {
+                circuitBreaker.execute();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        try {
+            circuitBreaker.execute(); // "Service is currently unavaliable"
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        try {
+            Thread.sleep(3000);
+            System.out.println(circuitBreaker.execute());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}
+
 enum CircuitBreakerState {
     CLOSED, OPEN, HALF_OPEN
 }
@@ -13,7 +53,7 @@ class CircuitBreaker<T> {
     private final int failureThreshold;
     private final long timeoutDuration;
     private final long failureWindow;
-    private Queue<Long> failureQueue = new LinkedList<>();
+    private final Queue<Long> failureQueue = new LinkedList<>();
     private long lastFailureTime = 0;
 
     CircuitBreaker(Supplier<T> function, int failureThreshold, long timeoutDuration, long failureWindow) {
