@@ -12,15 +12,34 @@ public class Wise_CircuitBreaker_3 {
             public String get() {
                 count++;
                 if (count < 4) {
-                    throw new Exception("Test error");
+                    throw new RuntimeException("Test error");
                 } else {
                     return "Supplier returns a value";
                 }
             }
         };
 
-        CircuitBreaker<String> circuitBreaker = new CircuitBreaker<>(supplier, 3, 3000, 5000);
+        CircuitBreaker<String> circuitBreaker = new CircuitBreaker<>(supplier, 3, 2000, 5000);
+        for (int i = 0; i < 30; i++) {
+            try {
+                circuitBreaker.execute();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        try {
+            circuitBreaker.execute();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
 
+        try {
+            Thread.sleep(3000);
+            System.out.println(circuitBreaker.execute());
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
 
@@ -60,7 +79,7 @@ class CircuitBreaker<T> {
             return result;
         } catch (Exception e) {
             collectFailure(currentTime);
-            throw new Exception("Error during execution",e);
+            throw new Exception("Error during execution", e);
         }
     }
 
@@ -79,7 +98,5 @@ class CircuitBreaker<T> {
             state = CircuitBreakerState.OPEN;
         }
     }
-
-}
 
 }
