@@ -1,10 +1,44 @@
 
+import java.util.LinkedList;
 import java.util.Queue;
 import java.util.function.Supplier;
 
 public class Wise_CircuitBreaker_4 {
 
     public static void main(String[] args) {
+        Supplier<String> supplier = new Supplier<String>() {
+            int count = 0;
+
+            @Override
+            public String get() {
+                count++;
+                if (count < 4) {
+                    throw new RuntimeException("test error");
+                }
+                return "hello!";
+            }
+        };
+
+        CircuitBreaker<String> circuitBreaker = new CircuitBreaker<>(supplier, 3, 2000, 5000);
+        for (int i = 0; i < 5; i++) {
+            try {
+                circuitBreaker.execute();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        try {
+            circuitBreaker.execute();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            Thread.sleep(3000);
+            System.out.println(circuitBreaker.execute());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
 
     }
 }
@@ -21,7 +55,7 @@ class CircuitBreaker<T> {
     private long timeoutDuration;
     private long failureWindow;
     private long lastFailureTime = 0;
-    private Queue<Long> failureQueue;
+    private Queue<Long> failureQueue = new LinkedList<>();
 
     CircuitBreaker(Supplier<T> supplier, int failureThreshold, long timeoutDuration, long failureWindow) {
         this.supplier = supplier;
@@ -34,10 +68,11 @@ class CircuitBreaker<T> {
         long currentTime = System.currentTimeMillis();
         if (state == CircuitBreakerState.OPEN) {
             if ((currentTime - lastFailureTime) > timeoutDuration) {
+                System.out.println("HALF_OPEN");
                 state = CircuitBreakerState.HALF_OPEN;
+            } else {
+                throw new Exception("circuit breaker is ON, service unavailable now");
             }
-        } else {
-            throw new Exception("circuit breaker is ON, service unavailable now");
         }
         try {
             T result = supplier.get();
@@ -45,11 +80,12 @@ class CircuitBreaker<T> {
             return result;
         } catch (Exception e) {
             countFailure(currentTime);
-            throw new Exception("failure in execute()");
+            throw new Exception("failure in execute()", e);
         }
     }
 
     private void reset() {
+        System.out.println("CircuitBreakerState.CLOSED");
         state = CircuitBreakerState.CLOSED;
         failureQueue.clear();
     }
@@ -61,7 +97,8 @@ class CircuitBreaker<T> {
         }
         failureQueue.add(currentTime);
         lastFailureTime = currentTime;
-        if (failureQueue.size() > failureThreshold) {
+        if (failureQueue.size() >= failureThreshold) {
+            System.out.println("CircuitBreakerState.OPEN");
             state = CircuitBreakerState.OPEN;
         }
     }
