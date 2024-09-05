@@ -19,7 +19,7 @@ public class Wise_CircuitBreaker_4 {
             }
         };
 
-        CircuitBreaker<String> circuitBreaker = new CircuitBreaker<>(supplier, 3, 2000, 5000);
+        CircuitBreaker<String> circuitBreaker = new CircuitBreaker<>(supplier, 3, 2000, 5000, 3);
         for (int i = 0; i < 5; i++) {
             try {
                 circuitBreaker.execute();
@@ -56,12 +56,15 @@ class CircuitBreaker<T> {
     private long failureWindow;
     private long lastFailureTime = 0;
     private Queue<Long> failureQueue = new LinkedList<>();
+    private int halfOpenSuccessThreshold;
+    private int halfOpenSuccessCount = 0;
 
-    CircuitBreaker(Supplier<T> supplier, int failureThreshold, long timeoutDuration, long failureWindow) {
+    CircuitBreaker(Supplier<T> supplier, int failureThreshold, long timeoutDuration, long failureWindow, int halfOpenSuccessThreshold) {
         this.supplier = supplier;
         this.failureThreshold = failureThreshold;
         this.timeoutDuration = timeoutDuration;
         this.failureWindow = failureWindow;
+        this.halfOpenSuccessThreshold = halfOpenSuccessThreshold;
     }
 
     public T execute() throws Exception {
@@ -70,17 +73,31 @@ class CircuitBreaker<T> {
             if ((currentTime - lastFailureTime) > timeoutDuration) {
                 System.out.println("HALF_OPEN");
                 state = CircuitBreakerState.HALF_OPEN;
+                halfOpenSuccessCount = 0;
             } else {
                 throw new Exception("circuit breaker is ON, service unavailable now");
             }
         }
         try {
             T result = supplier.get();
-            reset();
+            if (state == CircuitBreakerState.HALF_OPEN) {
+                halfOpenSuccessCount++;
+                System.out.println("halfOpenSuccessCount: " + halfOpenSuccessCount);
+                if (halfOpenSuccessCount >= halfOpenSuccessThreshold) {
+                    reset();
+                }
+            }
             return result;
         } catch (Exception e) {
-            countFailure(currentTime);
+            if (state == CircuitBreakerState.HALF_OPEN) {
+                System.out.println("State becomes OPEN because it was HALF_OPEN and failed");
+                state = CircuitBreakerState.OPEN;
+                halfOpenSuccessCount = 0;
+            } else {
+                countFailure(currentTime);
+            }
             throw new Exception("failure in execute()", e);
+
         }
     }
 
@@ -88,6 +105,8 @@ class CircuitBreaker<T> {
         System.out.println("CircuitBreakerState.CLOSED");
         state = CircuitBreakerState.CLOSED;
         failureQueue.clear();
+        halfOpenSuccessCount = 0;
+        lastFailureTime = 0;
     }
 
     private void countFailure(long currentTime) {
