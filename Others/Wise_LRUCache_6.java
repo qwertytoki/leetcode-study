@@ -12,7 +12,6 @@ public class Wise_LRUCache_6 {
         cache.put(2, 200);
         cache.put(3, 300);
         cache.put(4, 400);
-        //cache not hit
         System.out.println(cache.get(1)); //cache not hit 
         System.out.println(cache.get(2)); //cache hit 
         cache.put(5, 500);
