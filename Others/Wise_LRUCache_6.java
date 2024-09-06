@@ -37,8 +37,10 @@ class LRUCache extends LinkedHashMap<Integer, Integer> {
 
     public int get(int key) {
         if (!super.containsKey(key)) {
+            System.out.println("Cache not hit!");
             return -1;
         }
+        System.out.println("Cache hit!");
         return super.get(key);
     }
 
