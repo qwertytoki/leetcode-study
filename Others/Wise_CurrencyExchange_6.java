@@ -1,8 +1,8 @@
 
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 class Wise_CurrencyExchange_6 {
 
@@ -106,32 +106,68 @@ class FallbackExchangeProvider implements ConversionRateProvider {
     }
 }
 
-class CacheManager extends LinkedHashMap<String, Double> {
+class CacheManager {
 
-    int maxSize;
+    private class CacheVal {
 
-    public CacheManager(int maxSize) {
-        super(maxSize, 0.75f, true);
-        this.maxSize = maxSize;
+        private final long time;
+        private final double rate;
+
+        CacheVal(long time, double rate) {
+            this.time = time;
+            this.rate = rate;
+        }
     }
 
-    @Override
-    protected boolean removeEldestEntry(Map.Entry<String, Double> entry) {
-        return size() > maxSize;
+    private final Map<String, CacheVal> cache = new ConcurrentHashMap<>();
+    private final long timeToLive;
+
+    public CacheManager(long timeToLive) {
+        this.timeToLive = timeToLive;
     }
 
     public Double get(String currencyPair) {
-        if (!super.containsKey(currencyPair)) {
-            System.out.println("Cache NOT hit!");
+        if (!cache.containsKey(currencyPair)) {
+            System.out.println("cahce not hit!");
             return null;
         }
-        System.out.println("Cache hit!");
-        return super.get(currencyPair);
-
+        long currentTime = System.currentTimeMillis();
+        CacheVal val = cache.get(currencyPair);
+        if ((currentTime - val.time) > timeToLive) {
+            System.out.println("cache hit but expired!");
+            cache.remove(currencyPair);
+            return null;
+        }
+        System.out.println("cache hit!");
+        return val.rate;
     }
 
     public void put(String currencyPair, double rate) {
-        super.put(currencyPair, rate);
+        cache.put(currencyPair, new CacheVal(System.currentTimeMillis(), rate));
     }
 
 }
+
+// class CacheManager extends LinkedHashMap<String, Double> {
+//     int maxSize;
+//     public CacheManager(int maxSize) {
+//         super(maxSize, 0.75f, true);
+//         this.maxSize = maxSize;
+//     }
+//     @Override
+//     protected boolean removeEldestEntry(Map.Entry<String, Double> entry) {
+//         return size() > maxSize;
+//     }
+//     public Double get(String currencyPair) {
+//         if (!super.containsKey(currencyPair)) {
+//             System.out.println("Cache NOT hit!");
+//             return null;
+//         }
+//         System.out.println("Cache hit!");
+//         return super.get(currencyPair);
+//     }
+//     public void put(String currencyPair, double rate) {
+//         super.put(currencyPair, rate);
+//     }
+
+// }
