@@ -1,6 +1,6 @@
 
-import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Wise_RateLimiter_7 {
 
@@ -25,7 +25,7 @@ class RateLimiter {
 
     private final int maxCall;
     private final long windowTimeMillis;
-    private final Queue<Long> requestsInWindow = new LinkedList<>();
+    private final Queue<Long> requestsInWindow = new ConcurrentLinkedQueue<>();
 
     RateLimiter(int maxCall, long windowTimeMillis) {
         this.maxCall = maxCall;
