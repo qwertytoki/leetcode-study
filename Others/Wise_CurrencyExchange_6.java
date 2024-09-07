@@ -1,34 +1,41 @@
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 class Wise_CurrencyExchange_6 {
 
     public static void main(String[] args) {
-        ConversionRateProvider provider = new ConversionRateProvider();
+        ConversionRateProvider provider = new FallbackExchangeProvider(Arrays.asList(new RateProviderA(), new RateProviderB()));
         CacheManager cacheManager = new CacheManager(3);
         CurrencyConversionService service = new CurrencyConversionService(provider, cacheManager);
-        double amount1 = service.convertCurrency("SGD", "JPY", 100);
-        System.out.println("amount1 :" + amount1); // cache NOT hit
 
-        double amount2 = service.convertCurrency("SGD", "JPY", 200);
-        System.out.println("amount2 :" + amount2); // cache hit
+        try {
+            double amount1 = service.convertCurrency("SGD", "JPY", 100);
+            System.out.println("amount1 :" + amount1); // cache NOT hit
 
-        double amount3 = service.convertCurrency("AUD", "JPY", 300);
-        System.out.println("amount1 :" + amount3); // cache NOT hit
+            double amount2 = service.convertCurrency("SGD", "JPY", 200);
+            System.out.println("amount2 :" + amount2); // cache hit
 
-        double amount4 = service.convertCurrency("USD", "JPY", 400);
-        System.out.println("amount1 :" + amount3); // cache NOT hit
+            double amount3 = service.convertCurrency("AUD", "JPY", 300);
+            System.out.println("amount3 :" + amount3); // cache NOT hit
 
-        double amount5 = service.convertCurrency("GBP", "JPY", 500);
-        System.out.println("amount1 :" + amount3); // cache NOT hit
+            double amount4 = service.convertCurrency("USD", "JPY", 400);
+            System.out.println("amount4 :" + amount4); // cache NOT hit
 
-        double amount6 = service.convertCurrency("SGD", "JPY", 600);
-        System.out.println("amount1 :" + amount3); // cache NOT hit
+            double amount5 = service.convertCurrency("GBP", "JPY", 500);
+            System.out.println("amount5 :" + amount5); // cache NOT hit
 
-        double amount7 = service.convertCurrency("USD", "JPY", 700);
-        System.out.println("amount1 :" + amount3); // cache hit!
+            double amount6 = service.convertCurrency("SGD", "JPY", 600);
+            System.out.println("amount6 :" + amount6); // cache NOT hit
 
+            double amount7 = service.convertCurrency("USD", "JPY", 700);
+            System.out.println("amount7 :" + amount7); // cache hit!
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
 
@@ -42,7 +49,7 @@ class CurrencyConversionService {
         this.cacheManager = cacheManager;
     }
 
-    public double convertCurrency(String fromCurrency, String toCurrency, double amount) {
+    public double convertCurrency(String fromCurrency, String toCurrency, double amount) throws Exception {
         String currencyPair = fromCurrency + "_" + toCurrency;
         Double currencyRate = cacheManager.get(currencyPair);
         if (currencyRate == null) {
@@ -53,10 +60,49 @@ class CurrencyConversionService {
     }
 }
 
-class ConversionRateProvider {
+interface ConversionRateProvider {
 
-    public double getCurrencyRate(String fromCurrency, String toCurrency) {
-        return 110.0;
+    double getCurrencyRate(String fromCurrency, String toCurrency) throws Exception;
+}
+
+class RateProviderA implements ConversionRateProvider {
+
+    @Override
+    public double getCurrencyRate(String fromCurrency, String toCurrency) throws Exception {
+        throw new Exception("test error! ProviderA gets an error!");
+        // return 110.0;
+    }
+}
+
+class RateProviderB implements ConversionRateProvider {
+
+    @Override
+    public double getCurrencyRate(String fromCurrency, String toCurrency) throws Exception {
+        // throw new Exception("test error! ProviderB gets an error!");
+        return 105.0;
+    }
+}
+
+class FallbackExchangeProvider implements ConversionRateProvider {
+
+    private final List<ConversionRateProvider> providers;
+
+    public FallbackExchangeProvider(List<ConversionRateProvider> providers) {
+        this.providers = providers;
+    }
+
+    @Override
+    public double getCurrencyRate(String fromCurrency, String toCurrency) throws Exception {
+        for (ConversionRateProvider provider : providers) {
+            try {
+                return provider.getCurrencyRate(fromCurrency, toCurrency);
+            } catch (Exception e) {
+                System.out.println("provider faces an error. we will try other providers  " + e.getMessage());
+            }
+        }
+
+        throw new Exception("all providers are failed. currently we cannot provide currency rate");
+
     }
 }
 
