@@ -2,7 +2,7 @@ class Solution {
     public int rob(int[] nums) {
         if(nums.length == 0){
             return 0;
-        }
+        }fot
         int t1 = 0;
         int t2 = 0;
         for(int i = 0; i< nums.length; i++){
@@ -11,6 +11,5 @@ class Solution {
             t1 = current;
         }
         return t1;
-
     }
 }
