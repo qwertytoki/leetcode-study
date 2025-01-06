@@ -2,36 +2,35 @@
 class Solution {
 
     public String convert(String s, int numRows) {
-        if (numRows == 1) {
+        if (numRows == 1 || s.length() <= numRows) {
             return s;
         }
-        List<List<Character>> charLists = new ArrayList<>();
+
+        // 各行の文字列を保持する StringBuilder を用意
+        StringBuilder[] rows = new StringBuilder[numRows];
         for (int i = 0; i < numRows; i++) {
-            charLists.add(new ArrayList<>());
+            rows[i] = new StringBuilder();
         }
-        int current = 0;
-        boolean goingUp = true;
-        for (int i = 0; i < s.length(); i++) {
-            List<Character> list = charLists.get(current);
-            list.add(s.charAt(i));
-            if (goingUp) {
-                current++;
-                if (current == numRows - 1) {
-                    goingUp = false;
-                }
-            } else {
-                current--;
-                if (current == 0) {
-                    goingUp = true;
-                }
+
+        int currentRow = 0;
+        boolean goingDown = false;
+
+        // 各文字を対応する行に追加
+        for (char c : s.toCharArray()) {
+            rows[currentRow].append(c);
+            // 行の方向を切り替え
+            if (currentRow == 0 || currentRow == numRows - 1) {
+                goingDown = !goingDown;
             }
+            currentRow += goingDown ? 1 : -1;
         }
-        StringBuilder sb = new StringBuilder();
-        for (List<Character> cList : charLists) {
-            for (char c : cList) {
-                sb.append(c);
-            }
+
+        // すべての行を結合
+        StringBuilder result = new StringBuilder();
+        for (StringBuilder row : rows) {
+            result.append(row);
         }
-        return sb.toString();
+
+        return result.toString();
     }
 }
